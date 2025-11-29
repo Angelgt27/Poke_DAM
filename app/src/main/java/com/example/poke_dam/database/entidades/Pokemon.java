@@ -16,7 +16,7 @@ public class Pokemon implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String nombre;
-    private int baseStat; // Campo para el poder base (base_stat)
+    private int baseStat;
     private String urlSprite;
     private String tipo;
     private String usuarioPropietario;
@@ -37,11 +37,11 @@ public class Pokemon implements Serializable {
         this.id = id;
     }
 
-    public String getNombrePokemon() {
+    public String getNombre() {
         return nombre;
     }
 
-    public void setNombrePokemon(String nombrePokemon) {
+    public void setNombre(String nombrePokemon) {
         this.nombre = nombrePokemon;
     }
 

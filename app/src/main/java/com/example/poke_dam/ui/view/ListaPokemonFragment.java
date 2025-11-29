@@ -58,10 +58,10 @@ public class ListaPokemonFragment extends Fragment {
         getParentFragmentManager().setFragmentResultListener("requestKey", this, (requestKey, bundle) -> {
             String nombre = bundle.getString("nombre");
             String url = bundle.getString("url");
+            int baseStat = bundle.getInt("base_stat");
 
             // Crear el nuevo pokemon y añadirlo a la lista
-            // (Ponemos stats y tipo genéricos por ahora, ya que Contenido los requiere)
-            Contenido nuevoPokemon = new Contenido(nombre, 0, url, "normal");
+            Contenido nuevoPokemon = new Contenido(nombre, baseStat, url, "normal");
             misPokemons.add(nuevoPokemon);
 
             adapter.notifyDataSetChanged();

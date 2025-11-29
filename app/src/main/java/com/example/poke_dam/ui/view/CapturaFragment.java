@@ -32,9 +32,10 @@ public class CapturaFragment extends Fragment {
     private TextView txtNombre;
     private Button btnCapturar;
 
-    // Variables temporales para guardar los datos del pokemon actual
     private String pokemonNombreActual;
     private String pokemonUrlActual;
+
+    private int pokemonStatBaseActual;
 
     public CapturaFragment() {
         // Constructor vacío requerido
@@ -61,6 +62,7 @@ public class CapturaFragment extends Fragment {
             Bundle result = new Bundle();
             result.putString("nombre", pokemonNombreActual);
             result.putString("url", pokemonUrlActual);
+            result.putInt("base_stat", pokemonStatBaseActual);
 
             // "requestKey" debe coincidir con el que pusimos en ListaPokemonFragment
             getParentFragmentManager().setFragmentResult("requestKey", result);
@@ -71,9 +73,8 @@ public class CapturaFragment extends Fragment {
     }
 
     private void buscarPokemonAleatorio() {
-        // Generar ID aleatorio entre 1 y 898 (Generaciones estandar)
         Random random = new Random();
-        int id = random.nextInt(898) + 1;
+        int id = random.nextInt(1025) + 1;
 
         // Llamada a la API
         PokeAPI.api.buscar(String.valueOf(id)).enqueue(new Callback<Respuesta>() {
@@ -82,11 +83,10 @@ public class CapturaFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     Respuesta datos = response.body();
 
-                    // Asumiendo que tu clase Respuesta tiene estos getters
-                    // NOTA: Si tu clase Respuesta es diferente, ajusta estas líneas
                     pokemonNombreActual = datos.getName();
-                    // La PokeAPI devuelve sprites anidados, asegúrate de acceder al correcto (front_default)
                     pokemonUrlActual = datos.getSprites().getFrontDefault();
+                    pokemonStatBaseActual = datos.getStats().get(0).getBase_stat();
+
 
                     // Actualizar UI
                     txtNombre.setText(pokemonNombreActual);

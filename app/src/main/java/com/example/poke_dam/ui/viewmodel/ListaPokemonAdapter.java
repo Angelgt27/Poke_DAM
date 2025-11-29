@@ -32,6 +32,7 @@ public class ListaPokemonAdapter extends RecyclerView.Adapter<ListaPokemonAdapte
     public void onBindViewHolder(@NonNull PokemonViewHolder holder, int position) {
         Contenido pokemon = listaPokemon.get(position);
         holder.txtNombre.setText(pokemon.getName());
+        holder.txtPoder.setText("Poder Base: " + pokemon.getBaseStat());
 
         // Cargar imagen usando Glide
         Glide.with(holder.itemView.getContext())
@@ -47,11 +48,14 @@ public class ListaPokemonAdapter extends RecyclerView.Adapter<ListaPokemonAdapte
     public static class PokemonViewHolder extends RecyclerView.ViewHolder {
         ImageView imgSprite;
         TextView txtNombre;
+        TextView txtPoder;
+
 
         public PokemonViewHolder(@NonNull View itemView) {
             super(itemView);
             imgSprite = itemView.findViewById(R.id.imgPokemon);
             txtNombre = itemView.findViewById(R.id.txtNombrePokemon);
+            txtPoder = itemView.findViewById(R.id.txtPoder);
         }
     }
 }

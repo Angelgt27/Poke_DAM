@@ -4,15 +4,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class Respuesta {
 
-    // El nombre del campo en el JSON es "name"
     @SerializedName("name")
     private String name;
 
-    // El JSON tiene un objeto anidado llamado "sprites"
     @SerializedName("sprites")
     private Sprites sprites;
 
-    // Getters
     public String getName() {
         return name;
     }
@@ -21,10 +18,9 @@ public class Respuesta {
         return sprites;
     }
 
-    // Clase interna para mapear el objeto "sprites" del JSON
     public static class Sprites {
 
-        // Dentro de sprites, queremos "front_default"
+        // Dentro de sprites, queremos "front_default" que es la imagen del pokemon de frente
         @SerializedName("front_default")
         private String frontDefault;
 

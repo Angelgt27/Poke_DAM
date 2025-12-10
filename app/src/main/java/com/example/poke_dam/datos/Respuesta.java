@@ -15,6 +15,9 @@ public class Respuesta {
     @SerializedName("stats")
     private List<Stats> stats;
 
+    @SerializedName("types")
+    private List<TypeSlot> types;
+
     public List<Stats> getStats() {
         return stats;
     }
@@ -27,8 +30,11 @@ public class Respuesta {
         return sprites;
     }
 
+    public List<TypeSlot> getTypes() {
+        return types;
+    }
+
     public static class Sprites {
-        // Dentro de sprites, queremos "front_default" que es la imagen del pokemon de frente
         @SerializedName("front_default")
         private String frontDefault;
 
@@ -43,6 +49,24 @@ public class Respuesta {
 
         public int getBase_stat() {
             return base_stat;
+        }
+    }
+
+    public static class TypeSlot {
+        @SerializedName("type")
+        private Type type;
+
+        public Type getType() {
+            return type;
+        }
+    }
+
+    public static class Type {
+        @SerializedName("name")
+        private String name;
+
+        public String getName() {
+            return name;
         }
     }
 }

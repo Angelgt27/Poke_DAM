@@ -12,7 +12,8 @@ import java.util.List;
 public interface PokemonDao {
     @Insert
     void insertPokemon(Pokemon pokemon);
-    @Query("SELECT * FROM pokemons_capturados WHERE usuarioPropietario = :usuarioId ORDER BY nombre ASC")
+
+    @Query("SELECT * FROM pokemons_capturados WHERE usuarioPropietario = :usuarioId ORDER BY idPokedex ASC")
     LiveData<List<Pokemon>> getPokemonsDeUsuario(String usuarioId);
 
     @Query("SELECT SUM(baseStat) FROM pokemons_capturados WHERE usuarioPropietario = :usuarioId")

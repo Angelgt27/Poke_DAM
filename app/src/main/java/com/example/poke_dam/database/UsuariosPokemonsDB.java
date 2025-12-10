@@ -11,7 +11,7 @@ import com.example.poke_dam.database.dao.UsuarioDao;
 import com.example.poke_dam.database.entidades.Pokemon;
 import com.example.poke_dam.database.entidades.Usuario;
 
-@Database(entities = {Usuario.class, Pokemon.class}, version = 1, exportSchema = false)
+@Database(entities = {Usuario.class, Pokemon.class}, version = 3, exportSchema = false)
 public abstract class UsuariosPokemonsDB extends RoomDatabase {
 
     public abstract UsuarioDao UsuarioDao();

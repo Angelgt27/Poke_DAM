@@ -63,7 +63,10 @@ public class LoginUsuarioFragment extends Fragment {
             public void onResult(Usuario usuario) {
                 requireActivity().runOnUiThread(() -> {
                     if (usuario != null) {
-                        navController.navigate(R.id.action_loginUsuarioFragment_to_listaPokemonFragment);
+                        // Pasar el nombre de usuario al siguiente fragmento
+                        Bundle bundle = new Bundle();
+                        bundle.putString("nombreUsuario", usuario.getNombreUsuario());
+                        navController.navigate(R.id.action_loginUsuarioFragment_to_listaPokemonFragment, bundle);
                     } else {
                         Toast.makeText(getContext(), "Usuario o contraseña incorrectos.", Toast.LENGTH_LONG).show();
                     }

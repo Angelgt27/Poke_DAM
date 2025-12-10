@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_listaPokemonFragment_to_capturaFragment"
             app:destination="@id/capturaFragment" />
+        <action
+            android:id="@+id/action_listaPokemonFragment_to_detallePokemonFragment"
+            app:destination="@id/detallePokemonFragment" />
     </fragment>
     <fragment
         android:id="@+id/capturaFragment"
@@ -43,5 +46,14 @@
         <action
             android:id="@+id/action_registrarUsuarioFragment_to_loginUsuarioFragment"
             app:destination="@id/loginUsuarioFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detallePokemonFragment"
+        android:name="com.example.poke_dam.ui.view.DetallePokemonFragment"
+        android:label="fragment_detalle_pokemon"
+        tools:layout="@layout/fragment_detalle_pokemon" >
+        <action
+            android:id="@+id/action_detallePokemonFragment_to_listaPokemonFragment"
+            app:destination="@id/listaPokemonFragment" />
     </fragment>
 </navigation>

@@ -15,17 +15,21 @@ public class Pokemon implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
+    private int idPokedex;
     private String nombre;
     private int baseStat;
     private String urlSprite;
     private String tipo;
+    private String tipo2; // Segundo tipo (puede ser null)
     private String usuarioPropietario;
 
-    public Pokemon(String nombre, int baseStat, String urlSprite, String tipo, String usuarioPropietario) {
+    public Pokemon(int idPokedex, String nombre, int baseStat, String urlSprite, String tipo, String tipo2, String usuarioPropietario) {
+        this.idPokedex = idPokedex;
         this.nombre = nombre;
         this.baseStat = baseStat;
         this.urlSprite = urlSprite;
         this.tipo = tipo;
+        this.tipo2 = tipo2;
         this.usuarioPropietario = usuarioPropietario;
     }
 
@@ -35,6 +39,14 @@ public class Pokemon implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getIdPokedex() {
+        return idPokedex;
+    }
+
+    public void setIdPokedex(int idPokedex) {
+        this.idPokedex = idPokedex;
     }
 
     public String getNombre() {
@@ -67,6 +79,14 @@ public class Pokemon implements Serializable {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    public String getTipo2() {
+        return tipo2;
+    }
+
+    public void setTipo2(String tipo2) {
+        this.tipo2 = tipo2;
     }
 
     public String getUsuarioPropietario() {

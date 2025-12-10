@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.example.poke_dam.R;
 import com.example.poke_dam.datos.Respuesta;
 import com.example.poke_dam.datos.network.PokeAPI;
+import com.example.poke_dam.database.repositorio.PokemonRepositorio;
 
 import java.util.Random;
 
@@ -30,12 +31,19 @@ public class CapturaFragment extends Fragment {
 
     private ImageView imgSprite;
     private TextView txtNombre;
+    private TextView txtPoder;
     private Button btnCapturar;
+    private Button btnSalir;
 
     private String pokemonNombreActual;
     private String pokemonUrlActual;
-
     private int pokemonStatBaseActual;
+    private String pokemonTipoActual;
+    private String pokemonTipo2Actual;
+    private int pokemonIdPokedex;
+
+    private String nombreUsuario;
+    private PokemonRepositorio pokemonRepositorio;
 
     public CapturaFragment() {
         // Constructor vacío requerido
@@ -51,30 +59,66 @@ public class CapturaFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Obtener el nombre de usuario desde los argumentos
+        if (getArguments() != null) {
+            nombreUsuario = getArguments().getString("nombreUsuario");
+        }
+
+        pokemonRepositorio = new PokemonRepositorio(requireActivity().getApplication());
+
         imgSprite = view.findViewById(R.id.imgSpriteCaptura);
         txtNombre = view.findViewById(R.id.txtNombreCaptura);
+        txtPoder = view.findViewById(R.id.txtPoderCaptura);
         btnCapturar = view.findViewById(R.id.btnConfirmarCaptura);
+        btnSalir = view.findViewById(R.id.btnSalirCaptura);
 
         buscarPokemonAleatorio();
 
-        btnCapturar.setOnClickListener(v -> {
-            // Empaquetar los datos para devolverlos al fragmento anterior
-            Bundle result = new Bundle();
-            result.putString("nombre", pokemonNombreActual);
-            result.putString("url", pokemonUrlActual);
-            result.putInt("base_stat", pokemonStatBaseActual);
+        btnCapturar.setOnClickListener(v -> validarYCapturar(view));
+        btnSalir.setOnClickListener(v -> Navigation.findNavController(view).popBackStack());
+    }
 
-            // "requestKey" debe coincidir con el que pusimos en ListaPokemonFragment
-            getParentFragmentManager().setFragmentResult("requestKey", result);
+    private void validarYCapturar(View view) {
+        // Verificar si el pokémon ya está capturado
+        pokemonRepositorio.verificarPokemonDuplicado(nombreUsuario, pokemonNombreActual, esDuplicado -> {
+            if (esDuplicado) {
+                requireActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), "¡Ya tienes este Pokémon capturado!", Toast.LENGTH_LONG).show();
+                });
+                return;
+            }
 
-            // Volver atrás
-            Navigation.findNavController(view).popBackStack();
+            // Obtener la suma de poder del usuario
+            pokemonRepositorio.obtenerSumaPoderDeUsuario(nombreUsuario, sumaTotal -> {
+                requireActivity().runOnUiThread(() -> {
+                    // Si el usuario no tiene pokémons (suma = 0), puede capturar cualquiera
+                    if (sumaTotal == 0 || pokemonStatBaseActual <= sumaTotal) {
+                        // Empaquetar los datos para devolverlos al fragmento anterior
+                        Bundle result = new Bundle();
+                        result.putInt("idPokedex", pokemonIdPokedex);
+                        result.putString("nombre", pokemonNombreActual);
+                        result.putString("url", pokemonUrlActual);
+                        result.putInt("base_stat", pokemonStatBaseActual);
+                        result.putString("tipo", pokemonTipoActual);
+                        result.putString("tipo2", pokemonTipo2Actual);
+
+                        getParentFragmentManager().setFragmentResult("requestKey", result);
+                        Navigation.findNavController(view).popBackStack();
+                    } else {
+                        Toast.makeText(getContext(),
+                                "¡Este Pokémon es demasiado fuerte! Poder: " + pokemonStatBaseActual +
+                                        " / Tu poder total: " + sumaTotal,
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+            });
         });
     }
 
     private void buscarPokemonAleatorio() {
         Random random = new Random();
         int id = random.nextInt(1025) + 1;
+        pokemonIdPokedex = id;
 
         // Llamada a la API
         PokeAPI.api.buscar(String.valueOf(id)).enqueue(new Callback<Respuesta>() {
@@ -87,9 +131,23 @@ public class CapturaFragment extends Fragment {
                     pokemonUrlActual = datos.getSprites().getFrontDefault();
                     pokemonStatBaseActual = datos.getStats().get(0).getBase_stat();
 
+                    // Obtener los tipos del pokémon
+                    if (datos.getTypes() != null && !datos.getTypes().isEmpty()) {
+                        pokemonTipoActual = datos.getTypes().get(0).getType().getName();
+                        // Segundo tipo si existe
+                        if (datos.getTypes().size() > 1) {
+                            pokemonTipo2Actual = datos.getTypes().get(1).getType().getName();
+                        } else {
+                            pokemonTipo2Actual = null;
+                        }
+                    } else {
+                        pokemonTipoActual = "normal";
+                        pokemonTipo2Actual = null;
+                    }
 
                     // Actualizar UI
-                    txtNombre.setText(pokemonNombreActual);
+                    txtNombre.setText(pokemonNombreActual.toUpperCase());
+                    txtPoder.setText("Poder Base: " + pokemonStatBaseActual);
 
                     Glide.with(requireContext())
                             .load(pokemonUrlActual)
@@ -99,6 +157,7 @@ public class CapturaFragment extends Fragment {
                     btnCapturar.setEnabled(true);
                 } else {
                     txtNombre.setText("Error");
+                    txtPoder.setText("Poder Base: --");
                 }
             }
 

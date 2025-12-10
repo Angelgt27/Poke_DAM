@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,6 +31,7 @@ public class ListaPokemonFragment extends Fragment {
     private ListaPokemonAdapter adapter;
     private PokemonRepositorio pokemonRepositorio;
     private String nombreUsuario;
+    private TextView txtHeaderPoderTotal;
 
     public ListaPokemonFragment() {
         // Constructor vacío
@@ -52,6 +54,7 @@ public class ListaPokemonFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.recyclerViewPokemon);
         layoutVacio = view.findViewById(R.id.layoutVacio);
+        txtHeaderPoderTotal = view.findViewById(R.id.txtHeaderPoderTotal);
         Button btnAtrapar = view.findViewById(R.id.btnAtrapar);
         Button btnSalir = view.findViewById(R.id.btnSalirLista);
 
@@ -128,7 +131,18 @@ public class ListaPokemonFragment extends Fragment {
                     }
                     adapter.notifyDataSetChanged();
                     actualizarVista();
+                    actualizarPoderTotal();
                 }
+            });
+        }
+    }
+
+    private void actualizarPoderTotal() {
+        if (nombreUsuario != null) {
+            pokemonRepositorio.obtenerSumaPoderDeUsuario(nombreUsuario, sumaTotal -> {
+                requireActivity().runOnUiThread(() -> {
+                    txtHeaderPoderTotal.setText("PODER TOTAL: " + sumaTotal);
+                });
             });
         }
     }
